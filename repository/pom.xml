@@ -28,7 +28,7 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>com.oze.apps</groupId>
+            <groupId>com.tua.apps</groupId>
             <artifactId>rest-resource</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
