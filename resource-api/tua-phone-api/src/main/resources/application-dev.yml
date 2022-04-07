@@ -3,27 +3,20 @@ com.tua:
     secret: secret
 
 spring:
-#  datasource:
-#    driverClassName: org.h2.Driver
-#    username: oze
-#    password: oze
-#    url: jdbc:h2:file:./resource-api/oze-hospital-api/h2DB/oze
-#    embedded-database-connection: h2
-#  h2:
-#    console:
-#      enabled: true
-#      path: /h2-console
-#      settings:
-#        trace: true
-#        web-allow-others: false
+  datasource:
+    url: jdbc:postgresql://ec2-63-32-248-14.eu-west-1.compute.amazonaws.com:5432/df16fg2103pqle
+    username: vmhidospvuiaid
+    password: e9ddd8b51b5a1c88bc1b4ef767cc9e8659f1f12ce592dc3751d8c2b93791ccee
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        format-sql: true
         jdbc:
           lob:
             non_contextual_creation: true
     show-sql: true
+    open-in-view: false
   jackson:
     time-zone: 'GMT+1'
     serialization:

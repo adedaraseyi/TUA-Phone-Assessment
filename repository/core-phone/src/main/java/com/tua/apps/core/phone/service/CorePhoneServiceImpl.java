@@ -1,7 +1,7 @@
 package com.tua.apps.core.phone.service;
 
 import com.querydsl.core.types.Predicate;
-import com.tua.apps.core.phone.enitity.CoreAccount;
+import com.tua.apps.core.phone.entity.CoreAccount;
 import com.tua.apps.core.phone.repository.CoreAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

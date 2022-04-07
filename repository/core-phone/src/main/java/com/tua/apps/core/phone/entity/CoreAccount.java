@@ -1,8 +1,7 @@
-package com.tua.apps.core.phone.enitity;
+package com.tua.apps.core.phone.entity;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -16,7 +15,6 @@ import javax.validation.constraints.Size;
 @SuperBuilder
 @Table(name = "account")
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CoreAccount {
     @Id

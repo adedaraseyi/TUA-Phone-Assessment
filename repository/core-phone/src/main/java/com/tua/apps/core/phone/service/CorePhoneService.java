@@ -1,7 +1,7 @@
 package com.tua.apps.core.phone.service;
 
 import com.querydsl.core.types.Predicate;
-import com.tua.apps.core.phone.enitity.CoreAccount;
+import com.tua.apps.core.phone.entity.CoreAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
