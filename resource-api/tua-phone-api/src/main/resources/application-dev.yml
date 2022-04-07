@@ -1,0 +1,53 @@
+com.tua:
+  jwt:
+    secret: secret
+
+spring:
+#  datasource:
+#    driverClassName: org.h2.Driver
+#    username: oze
+#    password: oze
+#    url: jdbc:h2:file:./resource-api/oze-hospital-api/h2DB/oze
+#    embedded-database-connection: h2
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console
+#      settings:
+#        trace: true
+#        web-allow-others: false
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    show-sql: true
+  jackson:
+    time-zone: 'GMT+1'
+    serialization:
+      fail-on-empty-beans: false
+
+server:
+  port: 8089
+  servlet:
+    context-path: /api/tua
+    session:
+      cookie:
+        name: TUARRESOURCESESSION
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+  endpoint:
+    health:
+      show-details: always
+  server:
+    base-path: ${server.servlet.context-path}/actuator
+
+logging:
+  level:
+    root: info
