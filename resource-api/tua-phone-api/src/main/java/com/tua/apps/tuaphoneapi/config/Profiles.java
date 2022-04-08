@@ -1,4 +1,4 @@
-package com.tua.apps.tuaphoneapi.configuration;
+package com.tua.apps.tuaphoneapi.config;
 
 public class Profiles {
 

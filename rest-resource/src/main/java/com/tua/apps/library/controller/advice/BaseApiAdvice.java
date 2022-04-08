@@ -3,6 +3,7 @@ package com.tua.apps.library.controller.advice;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.tua.apps.library.exception.ApiException;
 import com.tua.apps.library.exception.NotFoundException;
+import com.tua.apps.pojo.GenericResponse;
 import com.tua.apps.pojo.RestResponsePojo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -24,6 +26,16 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public abstract class BaseApiAdvice {
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(value= HttpStatus.METHOD_NOT_ALLOWED)
+    @ResponseBody
+    public GenericResponse requestHandlingNoHandlerFound(NoHandlerFoundException e, HttpServletResponse response) {
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        return GenericResponse.builder()
+                .error(String.format("Requested resource not found. PATH: %s. METHOD: %s", e.getRequestURL(), e.getHttpMethod()))
+                .build();
+    }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -34,7 +46,7 @@ public abstract class BaseApiAdvice {
         log.info(e.getLocalizedMessage());
         BeanPropertyBindingResult beanPropertyBindingResult = (BeanPropertyBindingResult) e.getBindingResult();
         List<ObjectError> objectErrors = beanPropertyBindingResult.getAllErrors();
-        String errorMessage = "Unable to process request. Validation error(s): ".concat(objectErrors
+        String errorMessage = "Unable to process requests. Validation error(s): ".concat(objectErrors
                 .stream()
                 .map(ObjectError::getDefaultMessage)
                 .filter(m -> StringUtils.hasText(m) && !m.toLowerCase().contains("javax".toLowerCase()))
@@ -136,7 +148,7 @@ public abstract class BaseApiAdvice {
         log.error("Exception during execution of  application " + e.getMessage());
         e.printStackTrace();
         RestResponsePojo restPojo = new RestResponsePojo();
-        restPojo.setMessage("Unable to process request at the moment | " + e.getMessage());
+        restPojo.setMessage("Unable to process requests at the moment | " + e.getMessage());
         restPojo.setSuccess(Boolean.FALSE);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         restPojo.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

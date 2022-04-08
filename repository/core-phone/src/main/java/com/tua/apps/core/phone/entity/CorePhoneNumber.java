@@ -15,14 +15,13 @@ import javax.validation.constraints.Size;
 @Table(name = "account")
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CoreAccount {
+public class CorePhoneNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
-    @Size(max = 40)
-    String authId;
+    Integer accountId;
 
-    @Size(max = 30)
-    String username;
+    @Size(max = 40)
+    String number;
 }

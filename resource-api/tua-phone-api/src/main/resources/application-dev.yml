@@ -4,9 +4,9 @@ com.tua:
 
 spring:
   datasource:
-    url: jdbc:postgresql://ec2-63-32-248-14.eu-west-1.compute.amazonaws.com:5432/df16fg2103pqle
-    username: vmhidospvuiaid
-    password: e9ddd8b51b5a1c88bc1b4ef767cc9e8659f1f12ce592dc3751d8c2b93791ccee
+    url: jdbc:postgresql://ec2-99-81-137-11.eu-west-1.compute.amazonaws.com:5432/d57f2bs355761l
+    username: ordkrlgxyjchpy
+    password: 492a7badeea891ea88c16fa3fa9f1785aac7b90d101e6da6e5a4da47ad90f8a0
   jpa:
     properties:
       hibernate:
@@ -31,6 +31,7 @@ server:
         name: TUARRESOURCESESSION
 
 management:
+
   endpoints:
     web:
       exposure:
