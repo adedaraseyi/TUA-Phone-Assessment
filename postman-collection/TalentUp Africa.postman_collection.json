@@ -1,0 +1,107 @@
+{
+	"info": {
+		"_postman_id": "8e32a24f-555f-4468-9217-327be7cd4b0f",
+		"name": "TalentUp Africa",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "SMS",
+			"item": [
+				{
+					"name": "Inbound SMS",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\" : \"4924195509196\",\n    \"to\" : \"3253280315\",\n    \"text\" : \"STOP\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{TUA_API}}/api/tua/inbound/sms",
+							"host": [
+								"{{TUA_API}}"
+							],
+							"path": [
+								"api",
+								"tua",
+								"inbound",
+								"sms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Outbound SMS",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\" : \"4924195509196\",\n    \"to\" : \"3253280315\",\n    \"text\" : \"Hello\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{TUA_API}}/api/tua/outbound/sms",
+							"host": [
+								"{{TUA_API}}"
+							],
+							"path": [
+								"api",
+								"tua",
+								"outbound",
+								"sms"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "azr1",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "20S0KPNOIM",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
