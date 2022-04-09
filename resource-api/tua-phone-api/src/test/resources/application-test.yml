@@ -1,0 +1,48 @@
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  datasource:
+    url: jdbc:postgresql://ec2-99-81-137-11.eu-west-1.compute.amazonaws.com:5432/d57f2bs355761l
+    username: ordkrlgxyjchpy
+    password: 492a7badeea891ea88c16fa3fa9f1785aac7b90d101e6da6e5a4da47ad90f8a0
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        format-sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    show-sql: true
+    open-in-view: false
+  jackson:
+    time-zone: 'GMT+1'
+    serialization:
+      fail-on-empty-beans: false
+  web:
+    resources:
+      add-mappings: false
+
+server:
+  port: 8089
+  servlet:
+    context-path: /api/tua
+    session:
+      cookie:
+        name: TUARRESOURCESESSION
+
+management:
+
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+  endpoint:
+    health:
+      show-details: always
+  server:
+    base-path: ${server.servlet.context-path}/actuator
+
+logging:
+  level:
+    root: info

@@ -7,8 +7,8 @@ import com.tua.apps.tuaphoneapi.dto.PhoneNumberPair;
 import com.tua.apps.tuaphoneapi.dto.requests.InboundSMSRequest;
 import com.tua.apps.tuaphoneapi.dto.requests.OutboundSMSRequest;
 import com.tua.apps.tuaphoneapi.services.SmsService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequiredArgsConstructor
 @Slf4j
 public class SmsController {
-    private final SmsService service;
+    @Autowired
+    private SmsService service;
 
      @ResponseStatus(HttpStatus.OK)
      @PostMapping("/inbound/sms")

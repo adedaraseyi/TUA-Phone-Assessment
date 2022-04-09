@@ -1,10 +1,12 @@
 package com.tua.apps.tuaphoneapi.security.configuration;
 
+import com.tua.apps.tuaphoneapi.config.Profiles;
 import com.tua.apps.tuaphoneapi.security.auth.CustomAuthenticationProvider;
 import com.tua.apps.tuaphoneapi.security.filter.CustomFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,7 +19,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@Profile("!"+ Profiles.TEST)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired

@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = "com.tua.apps.core.phone.repository")
 @EntityScan("com.tua.apps.core.phone.entity")
 public class CorePhoneAutoConfiguration {
-
     @Bean
     public CorePhoneService corePhoneService() {
         return new CorePhoneServiceImpl();

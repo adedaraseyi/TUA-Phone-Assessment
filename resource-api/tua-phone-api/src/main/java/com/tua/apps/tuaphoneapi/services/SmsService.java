@@ -11,18 +11,17 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.tua.apps.core.phone.entity.QCorePhoneNumber.corePhoneNumber;
+
 @Service
 @RequiredArgsConstructor
 public class SmsService {
-    final CorePhoneService corePhoneService;
-    final EntityManager entityManager;
+    private final CorePhoneService corePhoneService;
 
     private final Cache<String, PhoneNumberPair> phoneNumberPairCache = CacheBuilder.newBuilder()
             .expireAfterAccess(7, TimeUnit.DAYS)
@@ -34,7 +33,7 @@ public class SmsService {
         );
     }
 
-    @RateLimited(key = "#request.from", requestsPerUnit = 5, timeUnit = 1, unit = ChronoUnit.DAYS)
+    @RateLimited(key = "#request.from", requestsPerUnit = 50, timeUnit = 1, unit = ChronoUnit.DAYS)
     public GenericResponse outboundSms(@NonNull OutboundSMSRequest request) {
         return GenericResponse.builder().message("outbound sms ok").build();
     }
