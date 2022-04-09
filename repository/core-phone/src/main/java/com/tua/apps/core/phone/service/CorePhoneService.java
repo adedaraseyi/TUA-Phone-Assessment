@@ -10,7 +10,9 @@ import org.springframework.data.domain.Sort;
 import java.util.Optional;
 
 public interface CorePhoneService {
-    Optional<CoreAccount> findAccountById(Long id);
+    Optional<CoreAccount> findAccountById(Integer id);
+
+    Optional<CoreAccount> findAccountByUsername(String username);
 
     CoreAccount saveOrUpdate(CoreAccount coreAccount);
 
@@ -28,7 +30,7 @@ public interface CorePhoneService {
 
     Iterable<CoreAccount> findAllAccounts(Predicate predicate, Sort sort);
 
-    Optional<CorePhoneNumber> findPhoneNumberById(Long id);
+    Optional<CorePhoneNumber> findPhoneNumberById(Integer id);
 
     CorePhoneNumber saveOrUpdate(CorePhoneNumber corePhoneNumber);
 

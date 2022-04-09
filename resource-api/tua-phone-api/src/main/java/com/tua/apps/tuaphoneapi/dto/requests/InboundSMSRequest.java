@@ -16,11 +16,11 @@ import javax.validation.constraints.Size;
 public class InboundSMSRequest {
 
     @NotBlank(message = "from is missing")
-    @Size(min = 6, max = 20, message = "from is invalid")
+    @Size(min = 6, max = 16, message = "from is invalid")
     String from;
 
     @NotBlank(message = "to is missing")
-    @Size(min = 6, max = 20, message = "to is invalid")
+    @Size(min = 6, max = 16, message = "to is invalid")
     String to;
 
     @NotBlank(message = "text is missing")

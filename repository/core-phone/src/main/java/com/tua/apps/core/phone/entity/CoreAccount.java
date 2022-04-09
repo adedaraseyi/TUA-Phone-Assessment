@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
 public class CoreAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    Long id;
+    Integer id;
 
     @Size(max = 40)
     String authId;

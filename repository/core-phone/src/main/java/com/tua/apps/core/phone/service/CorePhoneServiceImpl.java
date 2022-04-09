@@ -19,8 +19,13 @@ public class CorePhoneServiceImpl implements CorePhoneService {
     private CorePhoneNumberRepository corePhoneNumberRepository;
 
     @Override
-    public Optional<CoreAccount> findAccountById(Long id) {
+    public Optional<CoreAccount> findAccountById(Integer id) {
         return coreAccountRepository.findById(id);
+    }
+
+    @Override
+    public Optional<CoreAccount> findAccountByUsername(String username) {
+        return coreAccountRepository.findByUsername(username);
     }
 
     @Override
@@ -64,7 +69,7 @@ public class CorePhoneServiceImpl implements CorePhoneService {
     }
 
     @Override
-    public Optional<CorePhoneNumber> findPhoneNumberById(Long id) {
+    public Optional<CorePhoneNumber> findPhoneNumberById(Integer id) {
         return corePhoneNumberRepository.findById(id);
     }
 

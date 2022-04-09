@@ -19,4 +19,10 @@ public class BasicAuthEntryPoint extends BasicAuthenticationEntryPoint implement
         response.sendError(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.getReasonPhrase());
     }
 
+    @Override
+    public void afterPropertiesSet() {
+        setRealmName("TalentUp Africa");
+        super.afterPropertiesSet();
+    }
+
 }

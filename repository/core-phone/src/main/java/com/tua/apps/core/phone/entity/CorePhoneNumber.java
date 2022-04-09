@@ -12,13 +12,13 @@ import javax.validation.constraints.Size;
 @Entity
 @Data
 @SuperBuilder
-@Table(name = "account")
+@Table(name = "phone_number")
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CorePhoneNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    Long id;
+    Integer id;
 
     Integer accountId;
 
