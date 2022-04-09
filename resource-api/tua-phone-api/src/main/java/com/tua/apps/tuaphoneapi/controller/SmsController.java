@@ -10,9 +10,11 @@ import com.tua.apps.tuaphoneapi.services.SmsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.time.Instant;
@@ -23,18 +25,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class SmsController {
-     final SmsService service;
-
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/status")
-    public ResponseEntity<CoreAccount> test(@AuthenticationPrincipal CoreAccount account) {
-        return new ResponseEntity<>(account, HttpStatus.OK);
-    }
+    private final SmsService service;
 
      @ResponseStatus(HttpStatus.OK)
      @PostMapping("/inbound/sms")
-     public GenericResponse inboundSms(@Valid @RequestBody InboundSMSRequest request, @AuthenticationPrincipal CoreAccount account) {
-        if (!service.existsByAccountIdAndPhoneNumber(account.getId(), request.getTo())) {
+     public GenericResponse inboundSms(@AuthenticationPrincipal CoreAccount account, @Valid @RequestBody InboundSMSRequest request) {
+         if (!service.existsByAccountIdAndPhoneNumber(account.getId(), request.getTo())) {
             throw new ApiException("to parameter not found");
         }
 
@@ -48,7 +44,7 @@ public class SmsController {
 
      @ResponseStatus(HttpStatus.OK)
      @PostMapping("/outbound/sms")
-     public GenericResponse outboundSms(@Valid @RequestBody OutboundSMSRequest request, @AuthenticationPrincipal CoreAccount account) {
+     public GenericResponse outboundSms(@AuthenticationPrincipal CoreAccount account, @Valid @RequestBody OutboundSMSRequest request) {
          Optional<PhoneNumberPair> stoppedPhoneOptional = Optional.ofNullable(service.getPhoneNumberPair(request.getFrom(), request.getTo()));
          stoppedPhoneOptional.ifPresent(phoneNumberPair -> {
              if (!phoneNumberPair.stillValid(Instant.now())) {

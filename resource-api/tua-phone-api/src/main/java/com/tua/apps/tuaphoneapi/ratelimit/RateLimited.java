@@ -20,7 +20,12 @@ public @interface RateLimited {
     /**
      * @return rate limit in queries per time unit
      */
-    double requestsPerUnit();
+    int requestsPerUnit();
+
+    /**
+     * @return time unit for rate limit
+     */
+    long timeUnit();
 
     /**
      * @return time unit

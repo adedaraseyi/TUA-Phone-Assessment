@@ -3,7 +3,11 @@ package com.tua.apps.tuaphoneapi.ratelimit;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.tua.apps.library.exception.ApiException;
+import lombok.AccessLevel;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,12 +18,11 @@ import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 @Aspect
@@ -28,9 +31,8 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RateLimiterAspect {
 
-    private final Cache<String, Instant> lastAccessCache = CacheBuilder.newBuilder()
-            .expireAfterAccess(30, TimeUnit.DAYS)
-            .maximumSize(50_000)
+    private final Cache<String, CacheInfo> lastAccessCache = CacheBuilder.newBuilder()
+            .expireAfterAccess(7, TimeUnit.DAYS)
             .build();
 
     private final SpelExpressionParser spelExpressionParser = new SpelExpressionParser();
@@ -63,28 +65,37 @@ public class RateLimiterAspect {
 
         log.debug("Rate limiting for key {}", key);
 
-        Duration interval = calculateInterval(rateLimited);
-        Instant lastAccess = getLastAccess(key);
-        if (lastAccess != null && shouldBlockAccess(lastAccess, interval)) {
+        CacheInfo lastAccess = getLastAccess(key);
+        if (lastAccess != null && shouldBlockAccess(lastAccess, rateLimited)) {
             throw new ApiException(String.format("limit reached for from %s", key));
         }
 
-        lastAccessCache.put(key, Instant.now());
+        if (ObjectUtils.isEmpty(lastAccess)) {
+            lastAccess = CacheInfo.builder()
+                    .requests(1)
+                    .firstAccess(Instant.now())
+                    .build();
+        } else {
+            lastAccess.setRequests(lastAccess.getRequests() + 1);
+        }
+
+        lastAccessCache.put(key, lastAccess);
     }
 
-    private boolean shouldBlockAccess(Instant lastAccess, Duration intervalDuration) {
-        return Instant.now().isBefore(lastAccess.plus(intervalDuration));
+    private boolean shouldBlockAccess(CacheInfo cacheInfo, RateLimited rateLimited) {
+        Duration interval = Duration.ofMillis(rateLimited.timeUnit() * rateLimited.unit().getDuration().toMillis());
+        return cacheInfo.getRequests() >= rateLimited.requestsPerUnit() && cacheInfo.getFirstAccess().isAfter(Instant.now().minus(interval));
     }
 
-    private Duration calculateInterval(RateLimited rateLimited) {
-        double requestsPerUnit = rateLimited.requestsPerUnit();
-        long millisInUnit = rateLimited.unit().getDuration().toMillis();
-        double retryAfterMillis = millisInUnit / requestsPerUnit;
-        return Duration.of((long) retryAfterMillis, ChronoUnit.MILLIS);
-    }
-
-    private Instant getLastAccess(String key) {
+    private CacheInfo getLastAccess(String key) {
         return lastAccessCache.getIfPresent(key);
     }
 
+    @Data
+    @SuperBuilder
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    static class CacheInfo {
+        Integer requests;
+        Instant firstAccess;
+    }
 }

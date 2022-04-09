@@ -1,22 +1,21 @@
 package com.tua.apps.tuaphoneapi.services;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.tua.apps.core.phone.service.CorePhoneService;
 import com.tua.apps.pojo.GenericResponse;
 import com.tua.apps.tuaphoneapi.dto.PhoneNumberPair;
 import com.tua.apps.tuaphoneapi.dto.requests.OutboundSMSRequest;
 import com.tua.apps.tuaphoneapi.ratelimit.RateLimited;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.persistence.EntityManager;
-import javax.validation.Valid;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.tua.apps.core.phone.entity.QCorePhoneNumber.corePhoneNumber;
 @Service
@@ -25,9 +24,9 @@ public class SmsService {
     final CorePhoneService corePhoneService;
     final EntityManager entityManager;
 
-    public boolean existsByAccountId (Integer accountId) {
-        return corePhoneService.phoneNumberExists(corePhoneNumber.accountId.eq(accountId));
-    }
+    private final Cache<String, PhoneNumberPair> phoneNumberPairCache = CacheBuilder.newBuilder()
+            .expireAfterAccess(7, TimeUnit.DAYS)
+            .build();
 
     public boolean existsByAccountIdAndPhoneNumber (Integer accountId, String phoneNumber) {
         return corePhoneService.phoneNumberExists(corePhoneNumber.accountId.eq(accountId)
@@ -35,30 +34,29 @@ public class SmsService {
         );
     }
 
-    @RateLimited(key = "#request.from", requestsPerUnit = 50, unit = ChronoUnit.DAYS)
-    public GenericResponse outboundSms(@Valid @RequestBody OutboundSMSRequest request) {
+    @RateLimited(key = "#request.from", requestsPerUnit = 5, timeUnit = 1, unit = ChronoUnit.DAYS)
+    public GenericResponse outboundSms(@NonNull OutboundSMSRequest request) {
         return GenericResponse.builder().message("outbound sms ok").build();
     }
 
-    @Cacheable(value = "stopped_phone_number")
     public List<PhoneNumberPair> getPhoneNumberPairs() {
-        return new ArrayList<>();
+        return new ArrayList<>(phoneNumberPairCache.asMap().values());
     }
 
-    @Cacheable(value = "stopped_phone_number", key = "'from-'+ #from +'.to-' + #to")
     public PhoneNumberPair getPhoneNumberPair(String from, String to) {
-        return null;
+        return phoneNumberPairCache.getIfPresent(generateKey(from, to));
     }
 
-    @CachePut(value = "stopped_phone_number", key = "'from-'+ #from +'.to-' + #to")
     public void addPhoneNumberPair(String from, String to) {
-        //No persistence
+        phoneNumberPairCache.put(generateKey(from, to), PhoneNumberPair.builder().fromPhoneNumber(from).toPhoneNumber(to).build());
     }
 
-    @CacheEvict(value = "stopped_phone_number", key = "'from-'+ #from +'.to-' + #to")
     public void removePhoneNumberPair(String from, String to) {
-        //No persistence
+        phoneNumberPairCache.invalidate(generateKey(from, to));
     }
 
+    private static String generateKey(String from, String to) {
+        return "from-" + from + ".to-" + to;
+    }
 
 }
